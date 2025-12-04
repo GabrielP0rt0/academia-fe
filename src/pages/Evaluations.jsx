@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import EvalForm from '../components/EvalForm';
 import EvalChart from '../components/EvalChart';
+import EvaluationReport from '../components/EvaluationReport';
 import Loading from '../components/Loading';
+import { formatDate } from '../utils/formatters';
 import { toast } from 'react-toastify';
 
 export default function Evaluations() {
@@ -14,7 +16,20 @@ export default function Evaluations() {
   const selectedStudentId = searchParams.get('studentId') || '';
 
   const [showForm, setShowForm] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const {
+    data: evaluationsList,
+    loading: evaluationsLoading,
+    refetch: refetchEvaluations,
+  } = useFetch(
+    () => {
+      if (!selectedStudentId) return Promise.resolve(null);
+      return api.evaluations.listByStudent(selectedStudentId);
+    },
+    [selectedStudentId, refreshKey]
+  );
 
   const {
     data: chartData,
@@ -32,6 +47,7 @@ export default function Evaluations() {
     setShowForm(false);
     setRefreshKey((prev) => prev + 1);
     refetchChart();
+    refetchEvaluations();
   };
 
   const handleStudentChange = (e) => {
@@ -92,14 +108,74 @@ export default function Evaluations() {
       )}
 
       {selectedStudentId ? (
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Gráfico de Evolução</h2>
-          {chartLoading ? (
-            <Loading message="Carregando gráfico..." />
-          ) : (
-            <EvalChart chartData={chartData} />
+        <>
+          {/* Evaluations List */}
+          <div className="card mb-6">
+            <h2 className="text-xl font-semibold mb-4">Histórico de Avaliações</h2>
+            {evaluationsLoading ? (
+              <Loading message="Carregando avaliações..." />
+            ) : evaluationsList && evaluationsList.length > 0 ? (
+              <div className="space-y-3">
+                {evaluationsList.map((evalItem) => (
+                  <div
+                    key={evalItem.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          Avaliação de {formatDate(evalItem.date)}
+                        </h3>
+                        <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
+                          <span>Peso: <strong>{evalItem.weight_kg?.toFixed(2)} kg</strong></span>
+                          <span>Altura: <strong>{evalItem.height_m?.toFixed(2)} m</strong></span>
+                          <span>IMC: <strong>{evalItem.imc?.toFixed(2)}</strong></span>
+                          {evalItem.fat_percentage && (
+                            <span>% Gordura: <strong>{evalItem.fat_percentage.toFixed(2)}%</strong></span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setSelectedReportId(evalItem.id)}
+                        className="btn-outline text-sm"
+                      >
+                        Ver Relatório Completo
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-8">
+                Nenhuma avaliação registrada ainda.
+              </p>
+            )}
+          </div>
+
+          {/* Chart */}
+          <div className="card mb-6">
+            <h2 className="text-xl font-semibold mb-4">Gráfico de Evolução</h2>
+            {chartLoading ? (
+              <Loading message="Carregando gráfico..." />
+            ) : (
+              <EvalChart chartData={chartData} />
+            )}
+          </div>
+
+          {/* Report Modal */}
+          {selectedReportId && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+              <div className="min-h-screen px-4 py-8">
+                <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-xl p-6">
+                  <EvaluationReport
+                    evaluationId={selectedReportId}
+                    onClose={() => setSelectedReportId(null)}
+                  />
+                </div>
+              </div>
+            </div>
           )}
-        </div>
+        </>
       ) : (
         <div className="card text-center py-12">
           <p className="text-gray-600">
