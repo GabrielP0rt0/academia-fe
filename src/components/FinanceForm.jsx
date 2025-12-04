@@ -11,6 +11,7 @@ export default function FinanceForm({ onSuccess, onCancel }) {
   } = useForm({
     defaultValues: {
       type: 'income',
+      payment_method: 'pix',
       date_time: new Date().toISOString().slice(0, 16),
     },
   });
@@ -66,6 +67,26 @@ export default function FinanceForm({ onSuccess, onCancel }) {
         />
         {errors.amount && (
           <p className="error-text">{errors.amount.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="payment_method" className="label">
+          Método de Pagamento <span className="text-red-500">*</span>
+        </label>
+        <select
+          {...register('payment_method', { required: 'Método de pagamento é obrigatório' })}
+          id="payment_method"
+          className="input-field"
+        >
+          <option value="pix">PIX</option>
+          <option value="credit">Cartão de Crédito</option>
+          <option value="debit">Cartão de Débito</option>
+          <option value="cash">Dinheiro</option>
+          <option value="other">Outro</option>
+        </select>
+        {errors.payment_method && (
+          <p className="error-text">{errors.payment_method.message}</p>
         )}
       </div>
 

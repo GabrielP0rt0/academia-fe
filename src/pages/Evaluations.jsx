@@ -79,8 +79,8 @@ export default function Evaluations() {
       </div>
 
       {showForm && selectedStudentId && (
-        <div className="card mb-6">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="card mb-6 max-h-[90vh] overflow-y-auto">
+          <h2 className="text-xl font-semibold mb-4 sticky top-0 bg-white pb-2 border-b border-gray-200">
             Registrar Nova Avaliação
           </h2>
           <EvalForm
