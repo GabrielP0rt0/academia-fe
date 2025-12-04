@@ -7,11 +7,15 @@ import Loading from '../components/Loading';
 export default function Students() {
   const { students, loading, loadStudents } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Load students automatically when component mounts
+  // Load students automatically when component mounts (only once)
   useEffect(() => {
-    loadStudents();
-  }, [loadStudents]);
+    if (!hasLoaded) {
+      loadStudents();
+      setHasLoaded(true);
+    }
+  }, [loadStudents, hasLoaded]);
 
   const handleSuccess = () => {
     setShowForm(false);

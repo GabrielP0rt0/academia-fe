@@ -12,11 +12,15 @@ export default function Classes() {
   const [showForm, setShowForm] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Load classes automatically when component mounts
+  // Load classes automatically when component mounts (only once)
   useEffect(() => {
-    loadClasses();
-  }, [loadClasses]);
+    if (!hasLoaded) {
+      loadClasses();
+      setHasLoaded(true);
+    }
+  }, [loadClasses, hasLoaded]);
 
   const handleSuccess = () => {
     setShowForm(false);

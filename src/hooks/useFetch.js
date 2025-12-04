@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
  * Custom hook for fetching data with loading and error states
@@ -10,12 +10,18 @@ export function useFetch(fetchFn, dependencies = []) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const fetchFnRef = useRef(fetchFn);
 
-  const fetchData = async () => {
+  // Update ref when fetchFn changes
+  useEffect(() => {
+    fetchFnRef.current = fetchFn;
+  }, [fetchFn]);
+
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const result = await fetchFn();
+      const result = await fetchFnRef.current();
       setData(result);
     } catch (err) {
       setError(err.message || 'Erro ao carregar dados');
@@ -23,7 +29,7 @@ export function useFetch(fetchFn, dependencies = []) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();

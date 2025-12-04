@@ -20,11 +20,6 @@ export default function Finance() {
     refetch,
   } = useFetch(() => api.finance.list(selectedDate), [selectedDate, refreshKey]);
 
-  // Load finance data automatically when component mounts
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
   const handleSuccess = () => {
     setShowForm(false);
     setRefreshKey((prev) => prev + 1);

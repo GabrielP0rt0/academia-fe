@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api';
 
 const AppContext = createContext();
@@ -9,8 +9,8 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load students
-  const loadStudents = async () => {
+  // Load students - memoized to prevent infinite loops
+  const loadStudents = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -21,10 +21,10 @@ export function AppProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Load classes
-  const loadClasses = async () => {
+  // Load classes - memoized to prevent infinite loops
+  const loadClasses = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -35,7 +35,7 @@ export function AppProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Add student to cache
   const addStudent = (student) => {
