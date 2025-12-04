@@ -9,6 +9,7 @@ export default function Nav() {
     { path: '/', label: 'Dashboard' },
     { path: '/students', label: 'Alunos' },
     { path: '/evaluations', label: 'Avaliações' },
+    { path: '/evaluation-report', label: 'Relatório Completo' },
     { path: '/classes', label: 'Aulas' },
     { path: '/finance', label: 'Caixa' },
   ];

@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import StudentDetail from './pages/StudentDetail';
 import Evaluations from './pages/Evaluations';
+import EvaluationReportPage from './pages/EvaluationReportPage';
 import Classes from './pages/Classes';
 import Finance from './pages/Finance';
 import NotFound from './pages/NotFound';
@@ -74,6 +75,16 @@ function App() {
                 <PrivateRoute>
                   <AppLayout>
                     <Evaluations />
+                  </AppLayout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/evaluation-report"
+              element={
+                <PrivateRoute>
+                  <AppLayout>
+                    <EvaluationReportPage />
                   </AppLayout>
                 </PrivateRoute>
               }
