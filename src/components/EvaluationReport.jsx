@@ -1,7 +1,10 @@
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import Loading from './Loading';
+import AdvancedEvaluationCharts from './AdvancedEvaluationCharts';
 import { formatDate } from '../utils/formatters';
+import { exportToPDF, exportToExcel } from '../utils/reportExport';
+import { toast } from 'react-toastify';
 
 export default function EvaluationReport({ evaluationId, onClose }) {
   const {
@@ -59,7 +62,7 @@ export default function EvaluationReport({ evaluationId, onClose }) {
   const bmiClass = getBMIClassification(keyMetrics.imc);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-report-content>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
@@ -68,11 +71,25 @@ export default function EvaluationReport({ evaluationId, onClose }) {
             {student.name} - {formatDate(evaluation.date)}
           </p>
         </div>
-        {onClose && (
-          <button onClick={onClose} className="btn-outline">
-            Fechar
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={() => exportToPDF(reportData, student.name)}
+            className="btn-outline text-sm"
+          >
+            📄 Exportar PDF
           </button>
-        )}
+          <button
+            onClick={() => exportToExcel(reportData, student.name)}
+            className="btn-outline text-sm"
+          >
+            📊 Exportar Excel
+          </button>
+          {onClose && (
+            <button onClick={onClose} className="btn-outline">
+              Fechar
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Key Metrics Cards */}
@@ -309,6 +326,9 @@ export default function EvaluationReport({ evaluationId, onClose }) {
           </div>
         </div>
       </div>
+
+      {/* Advanced Charts */}
+      <AdvancedEvaluationCharts evaluation={evaluation} />
 
       {/* Notes */}
       {evaluation.notes && (

@@ -4,6 +4,7 @@ import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import ClassForm from '../components/ClassForm';
 import AttendanceModal from '../components/AttendanceModal';
+import ClassEnrollmentModal from '../components/ClassEnrollmentModal';
 import Loading from '../components/Loading';
 import { formatDate } from '../utils/formatters';
 
@@ -11,7 +12,9 @@ export default function Classes() {
   const { classes, loadClasses } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
+  const [selectedClassName, setSelectedClassName] = useState(null);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+  const [showEnrollmentModal, setShowEnrollmentModal] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
 
   // Load classes automatically when component mounts (only once)
@@ -32,9 +35,19 @@ export default function Classes() {
     setShowAttendanceModal(true);
   };
 
+  const handleOpenEnrollment = (classId, className) => {
+    setSelectedClassId(classId);
+    setSelectedClassName(className);
+    setShowEnrollmentModal(true);
+  };
+
   const handleAttendanceSuccess = () => {
     setShowAttendanceModal(false);
     setSelectedClassId(null);
+  };
+
+  const handleEnrollmentSuccess = () => {
+    // Enrollment modal handles its own state
   };
 
   return (
@@ -78,12 +91,20 @@ export default function Classes() {
               <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">
                 Criada em: {formatDate(classItem.created_at)}
               </p>
-              <button
-                onClick={() => handleOpenAttendance(classItem.id)}
-                className="btn-primary w-full text-sm sm:text-base"
-              >
-                Abrir Chamada
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => handleOpenEnrollment(classItem.id, classItem.name)}
+                  className="btn-outline w-full text-sm sm:text-base"
+                >
+                  Gerenciar Alunos
+                </button>
+                <button
+                  onClick={() => handleOpenAttendance(classItem.id)}
+                  className="btn-primary w-full text-sm sm:text-base"
+                >
+                  Abrir Chamada
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -97,6 +118,19 @@ export default function Classes() {
             setSelectedClassId(null);
           }}
           onSuccess={handleAttendanceSuccess}
+        />
+      )}
+
+      {showEnrollmentModal && selectedClassId && selectedClassName && (
+        <ClassEnrollmentModal
+          classId={selectedClassId}
+          className={selectedClassName}
+          onClose={() => {
+            setShowEnrollmentModal(false);
+            setSelectedClassId(null);
+            setSelectedClassName(null);
+          }}
+          onSuccess={handleEnrollmentSuccess}
         />
       )}
     </div>
