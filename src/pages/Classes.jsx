@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
@@ -12,6 +12,11 @@ export default function Classes() {
   const [showForm, setShowForm] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+
+  // Load classes automatically when component mounts
+  useEffect(() => {
+    loadClasses();
+  }, [loadClasses]);
 
   const handleSuccess = () => {
     setShowForm(false);

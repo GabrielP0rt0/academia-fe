@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import FinanceForm from '../components/FinanceForm';
@@ -19,6 +19,11 @@ export default function Finance() {
     error,
     refetch,
   } = useFetch(() => api.finance.list(selectedDate), [selectedDate, refreshKey]);
+
+  // Load finance data automatically when component mounts
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const handleSuccess = () => {
     setShowForm(false);

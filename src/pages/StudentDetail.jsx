@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import Loading from '../components/Loading';
+import EvaluationCharts from '../components/EvaluationCharts';
 import { formatDate, formatPhone } from '../utils/formatters';
 import { toast } from 'react-toastify';
 
@@ -87,6 +88,14 @@ export default function StudentDetail() {
           </Link>
         </div>
       </div>
+
+      {/* Evaluation Charts */}
+      {evaluations && evaluations.length > 0 && (
+        <div className="card mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Gráficos de Avaliação</h2>
+          <EvaluationCharts studentId={id} studentName={student.name} />
+        </div>
+      )}
 
       {/* Recent Evaluations */}
       <div className="card">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import StudentList from '../components/StudentList';
 import StudentForm from '../components/StudentForm';
@@ -7,6 +7,11 @@ import Loading from '../components/Loading';
 export default function Students() {
   const { students, loading, loadStudents } = useApp();
   const [showForm, setShowForm] = useState(false);
+
+  // Load students automatically when component mounts
+  useEffect(() => {
+    loadStudents();
+  }, [loadStudents]);
 
   const handleSuccess = () => {
     setShowForm(false);
