@@ -29,12 +29,12 @@ export default function Classes() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Aulas</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Aulas</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
         >
           {showForm ? 'Cancelar' : 'Nova Aula'}
         </button>
@@ -55,21 +55,23 @@ export default function Classes() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {classes.map((classItem) => (
             <div key={classItem.id} className="card">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                 {classItem.name}
               </h3>
               {classItem.description && (
-                <p className="text-gray-600 mb-4">{classItem.description}</p>
+                <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 break-words">
+                  {classItem.description}
+                </p>
               )}
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">
                 Criada em: {formatDate(classItem.created_at)}
               </p>
               <button
                 onClick={() => handleOpenAttendance(classItem.id)}
-                className="btn-primary w-full"
+                className="btn-primary w-full text-sm sm:text-base"
               >
                 Abrir Chamada
               </button>

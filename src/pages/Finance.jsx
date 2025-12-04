@@ -54,11 +54,28 @@ export default function Finance() {
     toast.success('Arquivo JSON exportado com sucesso!');
   };
 
+  const handleExportExcel = async () => {
+    if (!financeData?.entries || financeData.entries.length === 0) {
+      toast.warning('Não há dados para exportar');
+      return;
+    }
+
+    try {
+      await api.finance.exportExcel(selectedDate);
+      toast.success('Arquivo Excel exportado com sucesso!');
+    } catch (error) {
+      toast.error(error.message || 'Erro ao exportar Excel');
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Caixa / Financeiro</h1>
-        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Caixa / Financeiro</h1>
+        <button 
+          onClick={() => setShowForm(!showForm)} 
+          className="btn-primary w-full sm:w-auto"
+        >
           {showForm ? 'Cancelar' : 'Novo Lançamento'}
         </button>
       </div>
@@ -123,70 +140,95 @@ export default function Finance() {
 
           {/* Entries Table */}
           <div className="card">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Lançamentos do Dia</h2>
-              <div className="space-x-2">
-                <button onClick={handleExportCSV} className="btn-outline text-sm">
-                  Exportar CSV
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold">Lançamentos do Dia</h2>
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                <button 
+                  onClick={handleExportExcel} 
+                  className="btn-outline text-sm flex-1 sm:flex-none"
+                >
+                  Excel
                 </button>
-                <button onClick={handleExportJSON} className="btn-outline text-sm">
-                  Exportar JSON
+                <button 
+                  onClick={handleExportCSV} 
+                  className="btn-outline text-sm flex-1 sm:flex-none"
+                >
+                  CSV
+                </button>
+                <button 
+                  onClick={handleExportJSON} 
+                  className="btn-outline text-sm flex-1 sm:flex-none"
+                >
+                  JSON
                 </button>
               </div>
             </div>
 
             {financeData.entries && financeData.entries.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Data/Hora
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Tipo
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Valor
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Categoria
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Descrição
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {financeData.entries.map((entry) => (
-                      <tr key={entry.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDateTime(entry.date_time)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              entry.type === 'income'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {entry.type === 'income' ? 'Entrada' : 'Saída'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {formatCurrency(entry.amount)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {entry.category || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          {entry.description || '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <div className="inline-block min-w-full align-middle">
+                  <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Data/Hora
+                          </th>
+                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tipo
+                          </th>
+                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Valor
+                          </th>
+                          <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Categoria
+                          </th>
+                          <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Descrição
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {financeData.entries.map((entry) => (
+                          <tr key={entry.id} className="hover:bg-gray-50">
+                            <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {formatDateTime(entry.date_time).split(' ')[0]}
+                                </span>
+                                <span className="text-gray-400 text-xs">
+                                  {formatDateTime(entry.date_time).split(' ')[1]}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  entry.type === 'income'
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}
+                              >
+                                {entry.type === 'income' ? 'Entrada' : 'Saída'}
+                              </span>
+                            </td>
+                            <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                              {formatCurrency(entry.amount)}
+                            </td>
+                            <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {entry.category || '-'}
+                            </td>
+                            <td className="hidden md:table-cell px-6 py-4 text-sm text-gray-500">
+                              <div className="max-w-xs truncate" title={entry.description || '-'}>
+                                {entry.description || '-'}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             ) : (
               <p className="text-gray-500 text-center py-8">

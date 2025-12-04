@@ -45,11 +45,11 @@ export default function Evaluations() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Avaliações</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Avaliações</h1>
 
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <label htmlFor="student-select" className="label">
             Selecione o Aluno
           </label>
@@ -57,7 +57,7 @@ export default function Evaluations() {
             id="student-select"
             value={selectedStudentId}
             onChange={handleStudentChange}
-            className="input-field max-w-md"
+            className="input-field max-w-full sm:max-w-md"
           >
             <option value="">-- Selecione um aluno --</option>
             {students?.map((student) => (
@@ -71,7 +71,7 @@ export default function Evaluations() {
         {selectedStudentId && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="btn-primary mb-4"
+            className="btn-primary mb-4 w-full sm:w-auto"
           >
             {showForm ? 'Cancelar' : 'Nova Avaliação'}
           </button>

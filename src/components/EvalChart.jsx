@@ -100,8 +100,10 @@ export default function EvalChart({ chartData }) {
   };
 
   return (
-    <div className="w-full" style={{ height: '400px' }}>
-      <Line ref={chartRef} data={data} options={options} />
+    <div className="w-full overflow-x-auto">
+      <div style={{ height: '300px', minWidth: '300px' }} className="sm:h-[400px]">
+        <Line ref={chartRef} data={data} options={options} />
+      </div>
     </div>
   );
 }

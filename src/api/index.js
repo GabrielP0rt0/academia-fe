@@ -82,6 +82,35 @@ export const classes = {
   },
 };
 
+// Enrollments endpoints
+export const enrollments = {
+  list: async () => {
+    return apiRequest('/enrollments');
+  },
+  create: async (data) => {
+    return apiRequest('/enrollments', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  getByClass: async (classId) => {
+    return apiRequest(`/enrollments/class/${classId}/students`);
+  },
+  getByStudent: async (studentId) => {
+    return apiRequest(`/enrollments/student/${studentId}`);
+  },
+  remove: async (enrollmentId) => {
+    return apiRequest(`/enrollments/${enrollmentId}`, {
+      method: 'DELETE',
+    });
+  },
+  removeByStudentAndClass: async (studentId, classId) => {
+    return apiRequest(`/enrollments/student/${studentId}/class/${classId}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
 // Attendance endpoints
 export const attendance = {
   create: async (data) => {
@@ -104,6 +133,9 @@ export const attendance = {
     const url = `/attendance/class/${classId}${queryString ? `?${queryString}` : ''}`;
     return apiRequest(url);
   },
+  getStudentsForAttendance: async (classId) => {
+    return apiRequest(`/attendance/class/${classId}/students`);
+  },
 };
 
 // Evaluations endpoints
@@ -120,6 +152,9 @@ export const evaluations = {
   chartData: async (studentId) => {
     return apiRequest(`/evaluations/student/${studentId}/chart-data`);
   },
+  getReport: async (evaluationId) => {
+    return apiRequest(`/evaluations/${evaluationId}/report`);
+  },
 };
 
 // Finance endpoints
@@ -133,6 +168,29 @@ export const finance = {
       method: 'POST',
       body: JSON.stringify(data),
     });
+  },
+  exportExcel: async (date) => {
+    const url = date ? `/finance/export/xlsx?date=${date}` : '/finance/export/xlsx';
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Erro desconhecido' }));
+      throw new Error(errorData.detail || `Erro ${response.status}`);
+    }
+    
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `financeiro_${date || new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(downloadUrl);
   },
 };
 
@@ -149,6 +207,7 @@ const api = {
   auth,
   students,
   classes,
+  enrollments,
   attendance,
   evaluations,
   finance,

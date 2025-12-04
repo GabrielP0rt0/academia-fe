@@ -33,60 +33,70 @@ export default function StudentList({ students, loading }) {
           placeholder="Buscar por nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="input-field max-w-md"
+          className="input-field max-w-full sm:max-w-md"
         />
       </div>
 
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nome
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Data de Nascimento
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Telefone
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredStudents?.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {student.name}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {formatDate(student.birthdate)}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {formatPhone(student.phone)}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <Link
-                    to={`/students/${student.id}`}
-                    className="text-primary hover:text-primary-dark"
-                  >
-                    Ver detalhes
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Nome
+                    </th>
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Data de Nascimento
+                    </th>
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Telefone
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredStudents?.map((student) => (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="px-3 sm:px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {student.name}
+                        </div>
+                        <div className="text-xs text-gray-500 sm:hidden mt-1">
+                          {formatDate(student.birthdate)}
+                          {student.phone && ` • ${formatPhone(student.phone)}`}
+                        </div>
+                      </td>
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {formatDate(student.birthdate)}
+                        </div>
+                      </td>
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {formatPhone(student.phone)}
+                        </div>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <Link
+                          to={`/students/${student.id}`}
+                          className="text-primary hover:text-primary-dark"
+                        >
+                          Ver detalhes
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         {filteredStudents?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 px-4">
             Nenhum aluno encontrado com o termo "{searchTerm}"
           </div>
         )}
