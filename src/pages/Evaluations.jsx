@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useFetch } from '../hooks/useFetch';
 import api from '../api';
 import EvalForm from '../components/EvalForm';
 import EvalChart from '../components/EvalChart';
+import AdvancedEvaluationCharts from '../components/AdvancedEvaluationCharts';
 import EvaluationReport from '../components/EvaluationReport';
 import Loading from '../components/Loading';
 import { formatDate } from '../utils/formatters';
@@ -17,6 +18,7 @@ export default function Evaluations() {
 
   const [showForm, setShowForm] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
+  const [selectedEvaluationForCharts, setSelectedEvaluationForCharts] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const {
@@ -50,13 +52,26 @@ export default function Evaluations() {
     refetchEvaluations();
   };
 
+  // Set the latest evaluation for advanced charts when evaluations list loads
+  useEffect(() => {
+    if (evaluationsList && evaluationsList.length > 0 && !selectedEvaluationForCharts) {
+      // Sort by date descending and get the latest
+      const sorted = [...evaluationsList].sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+      );
+      setSelectedEvaluationForCharts(sorted[0]);
+    }
+  }, [evaluationsList, selectedEvaluationForCharts]);
+
   const handleStudentChange = (e) => {
     const studentId = e.target.value;
     if (studentId) {
       setSearchParams({ studentId });
       setShowForm(false);
+      setSelectedEvaluationForCharts(null); // Reset when student changes
     } else {
       setSearchParams({});
+      setSelectedEvaluationForCharts(null);
     }
   };
 
@@ -152,7 +167,7 @@ export default function Evaluations() {
             )}
           </div>
 
-          {/* Chart */}
+          {/* Evolution Chart */}
           <div className="card mb-6">
             <h2 className="text-xl font-semibold mb-4">Gráfico de Evolução</h2>
             {chartLoading ? (
@@ -161,6 +176,41 @@ export default function Evaluations() {
               <EvalChart chartData={chartData} />
             )}
           </div>
+
+          {/* Advanced Charts - Show for latest evaluation */}
+          {selectedEvaluationForCharts && evaluationsList && evaluationsList.length > 0 && (
+            <div className="card mb-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold mb-2">Análises Avançadas</h2>
+                <p className="text-sm text-gray-600">
+                  Gráficos da avaliação de {formatDate(selectedEvaluationForCharts.date)}
+                </p>
+                {evaluationsList.length > 1 && (
+                  <div className="mt-3">
+                    <label htmlFor="eval-select-charts" className="label text-sm">
+                      Selecionar outra avaliação para visualizar gráficos:
+                    </label>
+                    <select
+                      id="eval-select-charts"
+                      value={selectedEvaluationForCharts.id}
+                      onChange={(e) => {
+                        const selected = evaluationsList.find(ev => ev.id === e.target.value);
+                        if (selected) setSelectedEvaluationForCharts(selected);
+                      }}
+                      className="input-field mt-1 max-w-md"
+                    >
+                      {evaluationsList.map((evalItem) => (
+                        <option key={evalItem.id} value={evalItem.id}>
+                          {formatDate(evalItem.date)} - {evalItem.weight_kg?.toFixed(2)}kg
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+              <AdvancedEvaluationCharts evaluation={selectedEvaluationForCharts} />
+            </div>
+          )}
 
           {/* Report Modal */}
           {selectedReportId && (
