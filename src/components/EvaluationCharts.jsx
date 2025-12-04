@@ -284,18 +284,18 @@ export default function EvaluationCharts({ studentId, studentName }) {
           <label htmlFor="evaluation-select" className="label">
             Selecionar Avaliação
           </label>
-          <select
-            id="evaluation-select"
-            value={selectedEvaluationId || ''}
-            onChange={(e) => setSelectedEvaluationId(e.target.value)}
-            className="input-field max-w-md"
-          >
-            {evaluations.map((eval) => (
-              <option key={eval.id} value={eval.id}>
-                {formatDate(eval.date)} - {eval.weight_kg}kg
-              </option>
-            ))}
-          </select>
+            <select
+              id="evaluation-select"
+              value={selectedEvaluationId || ''}
+              onChange={(e) => setSelectedEvaluationId(e.target.value)}
+              className="input-field max-w-md"
+            >
+              {evaluations.map((evaluation) => (
+                <option key={evaluation.id} value={evaluation.id}>
+                  {formatDate(evaluation.date)} - {evaluation.weight_kg}kg
+                </option>
+              ))}
+            </select>
         </div>
         <button
           onClick={handleExportAllCharts}
