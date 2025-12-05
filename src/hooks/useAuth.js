@@ -21,6 +21,8 @@ export function useAuth() {
       const response = await api.auth.login({ email, password });
       localStorage.setItem('token', response.token);
       setIsAuthenticated(true);
+      // Dispatch custom event to notify AppContext to reload data
+      window.dispatchEvent(new Event('userLogin'));
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };

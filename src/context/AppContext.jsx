@@ -54,14 +54,43 @@ export function AppProvider({ children }) {
     setClasses((prev) => [...prev, newClass]);
   };
 
-  // Load initial data
+  // Load initial data and reload when token changes
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      loadStudents();
-      loadClasses();
-    }
-  }, []);
+    const checkAndLoadData = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        loadStudents();
+        loadClasses();
+      } else {
+        // Clear data when token is removed
+        setStudents([]);
+        setClasses([]);
+      }
+    };
+
+    // Load data on mount
+    checkAndLoadData();
+
+    // Listen for storage changes (e.g., when token is set after login)
+    const handleStorageChange = (e) => {
+      if (e.key === 'token') {
+        checkAndLoadData();
+      }
+    };
+
+    // Listen for custom event when login happens
+    const handleLogin = () => {
+      checkAndLoadData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userLogin', handleLogin);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userLogin', handleLogin);
+    };
+  }, [loadStudents, loadClasses]);
 
   const value = {
     students,

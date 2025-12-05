@@ -71,8 +71,13 @@ export const students = {
 
 // Classes endpoints
 export const classes = {
-  list: async () => {
-    return apiRequest('/classes');
+  list: async (fromDate, toDate) => {
+    const params = new URLSearchParams();
+    if (fromDate) params.append('from_date', fromDate);
+    if (toDate) params.append('to_date', toDate);
+    const queryString = params.toString();
+    const url = `/classes${queryString ? `?${queryString}` : ''}`;
+    return apiRequest(url);
   },
   create: async (data) => {
     return apiRequest('/classes', {

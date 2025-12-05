@@ -244,7 +244,7 @@ export default function AdvancedEvaluationCharts({ evaluation }) {
         {/* Fat Distribution Radar */}
         <div className="card">
           <h4 className="text-lg font-semibold mb-4">Distribuição de Gordura Corporal</h4>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: '300px' }} data-chart="fat-distribution">
             <Radar ref={fatDistributionRef} data={fatDistributionData} options={radarOptions} />
           </div>
           <p className="text-sm text-gray-600 mt-2">
@@ -255,7 +255,7 @@ export default function AdvancedEvaluationCharts({ evaluation }) {
         {/* Muscle Balance */}
         <div className="card">
           <h4 className="text-lg font-semibold mb-4">Equilíbrio Muscular</h4>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: '300px' }} data-chart="muscle-balance">
             <Bar ref={muscleBalanceRef} data={muscleBalanceData} options={chartOptions} />
           </div>
           <p className="text-sm text-gray-600 mt-2">
@@ -266,7 +266,7 @@ export default function AdvancedEvaluationCharts({ evaluation }) {
         {/* Body Composition Doughnut */}
         <div className="card">
           <h4 className="text-lg font-semibold mb-4">Gordura vs Massa Muscular</h4>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: '300px' }} data-chart="body-composition">
             <Doughnut ref={bodyCompositionRef} data={bodyCompositionData} options={chartOptions} />
           </div>
           <div className="mt-4 flex justify-center gap-6 text-sm">
@@ -288,7 +288,7 @@ export default function AdvancedEvaluationCharts({ evaluation }) {
         {/* Perimeter Ratios */}
         <div className="card">
           <h4 className="text-lg font-semibold mb-4">Relação de Perímetros</h4>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: '300px' }} data-chart="perimeter-ratios">
             <Bar ref={perimeterRatioRef} data={perimeterRatioData} options={chartOptions} />
           </div>
           <div className="mt-4 space-y-1 text-sm">
@@ -311,7 +311,7 @@ export default function AdvancedEvaluationCharts({ evaluation }) {
         <div className="card lg:col-span-2">
           <h4 className="text-lg font-semibold mb-4">Classificação Corporal</h4>
           <div className="flex flex-col lg:flex-row gap-6 items-center">
-            <div style={{ height: '250px', width: '250px' }} className="flex-shrink-0">
+            <div style={{ height: '250px', width: '250px' }} className="flex-shrink-0" data-chart="body-classification">
               <Doughnut ref={bodyClassificationRef} data={bodyClassificationData} options={chartOptions} />
             </div>
             <div className="flex-1">

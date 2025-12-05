@@ -3,7 +3,7 @@ import api from '../api';
 import Loading from './Loading';
 import AdvancedEvaluationCharts from './AdvancedEvaluationCharts';
 import { formatDate } from '../utils/formatters';
-import { exportToPDF, exportToExcel } from '../utils/reportExport';
+import { exportToPDF } from '../utils/reportExport';
 import { toast } from 'react-toastify';
 
 export default function EvaluationReport({ evaluationId, onClose }) {
@@ -77,12 +77,6 @@ export default function EvaluationReport({ evaluationId, onClose }) {
             className="btn-outline text-sm"
           >
             📄 Exportar PDF
-          </button>
-          <button
-            onClick={() => exportToExcel(reportData, student.name)}
-            className="btn-outline text-sm"
-          >
-            📊 Exportar Excel
           </button>
           {onClose && (
             <button onClick={onClose} className="btn-outline">
